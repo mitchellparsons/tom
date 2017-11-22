@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "preserveConstEnums": true,
+    "outDir": "./dist/",
+    "sourceRoot": "./src/",
+    "rootDir": "./src/",
+    "sourceMap": true,
+    "module": "commonjs",
+    "lib": [
+      "es5"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
