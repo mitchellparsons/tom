@@ -9,10 +9,14 @@ export default class Actor {
   public channels: Channel2[];
   public module: any;
   public methods: string[];
-  
+  public signature() {
+    return {
+      name: this.name,
+      methods: this.methods
+    }
+  }
+
   public channel(channelName) {
-    console.log("getting channel: ", channelName, this.channels)
-    console.log("<<<>><<", this.module)
     let channel = this.channels.find((channel) => {
       return channel.name === channelName
     });

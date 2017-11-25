@@ -45,14 +45,19 @@ export class Agent2 {
     this.actors = [];
   }
 
-  async loadAgency(agencyConfig: any) {
+  public async loadAgency(agencyConfig: any) {
+    console.log("AGENT2  LOAD AGENCY", agencyConfig)
     let agency = await AgencyLoader(agencyConfig);
     this.agencies.push(agency);
   }
 
-  async addActor(actorConfig: any) {
+  public async addActor(actorConfig: any) {
     let actor = new Actor(actorConfig);
     await actor.loadChannels();
+    // register actor with agency
+    await Promise.all(actorConfig.register.map( async (agency) => {
+      await this.agencies.find((a) => a.name === agency).register(actor);
+    }));
     this.actors.push(actor);
   }
 

@@ -1,8 +1,10 @@
+import Actor from "./Actor";
 import Agent from "./agent";
 
 // TODO: Get rid of "any"
 export default interface Agency {
-  register(actorConfig: any);
+  name: string;
+  register(actor: Actor);
   getAgent(actorName: string): Agent;
   toString();
 }

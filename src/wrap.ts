@@ -11,6 +11,7 @@ import ChannelLoader from "./channelLoader";
 
 const agentFile = require(path.join(process.cwd(), "./agent.json"));
 
+
 load();
 async function load() {
   if(agentFile.actors) {
@@ -30,7 +31,7 @@ async function load() {
       }
       actorConfig.agency.forEach( async (agencyConfig) => {
         let agency = await AgencyLoader(agencyConfig);
-        agency.register(actor);
+        //agency.register(actor);
       })
     });
   }

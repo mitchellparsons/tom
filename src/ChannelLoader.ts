@@ -19,6 +19,6 @@ export function ChannelLoader2(type): any {
     let module = require(path.join(__dirname, "core.channels", type, "/"));
     return module;
   } catch (err) {
-    console.log("not a core agency")
+    console.log("not a core channel", type)
   }
 }

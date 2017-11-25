@@ -15,6 +15,7 @@ export class MemoryChannel implements Channel2{
 
 }
 
+
 export default async function setup(channelConfig: any, actorModule: any): Promise<Channel2> {
   return await new MemoryChannel(channelConfig, actorModule);
 }
