@@ -1,0 +1,13 @@
+version: "1"
+agencies:
+  - name: "memory"
+    type: "memory"
+actors:
+  - name: "test1"
+    file: "test1.js"
+    register:
+      - "memory"
+    channels:
+      - name: "memory"
+        type: "memory"
+        values: "other things"

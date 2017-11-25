@@ -4,3 +4,8 @@ export default interface Channel {
   connect(actorName: string);
   toString();
 }
+
+export interface Channel2 {
+  name: string;
+  call(methodName, ...data): Promise<any>;
+}

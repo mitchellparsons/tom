@@ -8,11 +8,20 @@
   },
   "scripts": {
     "build": "tsc",
-    "build-watch": "tsc --watch"
+    "build-watch": "tsc --watch",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^4.0.5",
+    "@types/js-yaml": "^3.10.1",
+    "@types/mocha": "^2.2.44",
+    "chai": "^4.1.2",
+    "js-yaml": "^3.10.0",
+    "mocha": "^4.0.1",
+    "rxjs": "^5.5.2",
+    "ts-node": "^3.3.0",
     "typescript": "^2.6.1"
   },
   "devDependencies": {
