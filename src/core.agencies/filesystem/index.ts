@@ -1,18 +1,29 @@
 import Actor from "../../Actor";
-import Agent from "../../Agent";
-import Agency from "../../agency";
+import Agency, { AgencyConfig } from "../../Agency";
 import * as path from "path";
 import * as fs from "fs";
 
-const actors = {};
+// const actors = {};
 
-export default class FileSystemAgency implements Agency{
+class FileSystemAgency implements Agency {
 
-  public name: string = "filesystem";
+  public name: string;
 
-  constructor(options: any) {
-    console.log("Constructing FileSystemAgency")
-    this.path = options.path;
+  public getActorConfig(actorName: string) {
+      var actors = this.actors();
+      return actors[actorName];
+  }
+  
+  constructor(agencyConfig: AgencyConfig) {
+    console.log("Constructing FileSystemAgency " + agencyConfig.name);
+    this.name = agencyConfig.name;
+    if(agencyConfig.config.filepath) {
+      this.path = agencyConfig.config.filepath;
+    } else if (agencyConfig.config.relativefilepath) {
+      this.path = path.join(process.cwd(), agencyConfig.config.relativefilepath);
+    } else {
+      throw new Error("'filepath' or 'relativefilepath' not set for AgencyConfig");
+    }
   }
 
   private path: string;
@@ -48,23 +59,12 @@ export default class FileSystemAgency implements Agency{
   register(actor: Actor) {
     // console.log("FS Registering ", actor.name, actor.signature());
     var actors = this.actors();
-    // actors[actor.name] = actor.signature();
+    actors[actor.name] = actor.signature();
     this.setActors(actors);
   }
 
-  getAgent(actorName: string): Agent {
-    var actors = this.readFile(this.path);
-    console.log("Agent for " + actorName, actors[actorName])
-    // return new Agent(actors[actorName]);
-    return null;
-  }
+}
 
-  getActorSignature(actorName: string) {
-    var actors = this.actors();
-    return actors[actorName];
-  }
-
-  toString() {
-    return "memory";
-  }
+export async function connect(agencyConfig: AgencyConfig): Promise<Agency> {
+  return new FileSystemAgency(agencyConfig);
 }

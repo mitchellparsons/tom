@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as jsyaml from "js-yaml";
 import Agent from "./Agent";
+import { AgencyConfig } from "./Agency";
 import { Subject } from "rxjs"
 import validate from "./schemas";
 
@@ -22,7 +23,12 @@ async function boot(filepath: string): Promise<Agent> {
   // if(!valid) {
   //   return Promise.reject("Not a valid version " + version);
   // }
-  
+
+  if(agentFile.agencies) {
+    await Promise.all(agentFile.agencies.map( async (agencyConfig: AgencyConfig) =>{
+      return await agent.connectToAgency(agencyConfig);
+    }));
+  }
 
   if(agentFile.actors) {
     await Promise.all(agentFile.actors.map( async (actorConfig) => {

@@ -28,6 +28,10 @@ class HttpChannelServer implements Channel{
     console.log("calling call on http", this.name)
     return this.actor.call(funcName, ...data);
   }
+
+  signature() {
+    return this.channelConfig;
+  }
 }
 
 class HttpChannelClient implements Channel{
@@ -36,16 +40,16 @@ class HttpChannelClient implements Channel{
     
     // constructor(public channelConfig: any, public actorModule: any) {
     constructor(private actor: Actor, private channelConfig: ChannelConfig) {
-      this.host = channelConfig.config.host;
+      this.hostname = channelConfig.config.hostname;
       this.port = channelConfig.config.port;
     }
 
-    private host: string;
+    private hostname: string;
     private port: string;
 
     async call(funcName: string, ...data) {
       return await new Promise((resolve, reject) => {
-        http.get(`http://${this.host}:${this.port}/${funcName}`, (resp) => {
+        http.get(`http://${this.hostname}:${this.port}/${funcName}`, (resp) => {
           let data = '';
           // A chunk of data has been recieved.
           resp.on('data', (chunk) => {
@@ -53,9 +57,10 @@ class HttpChannelClient implements Channel{
           });
           // The whole response has been received. Print out the result.
           resp.on('end', () => {
-            var json  = JSON.parse(data).explanation;
-            console.log("DING DING!", json);
-            resolve(json);
+            console.log("END!", data)
+            // var json  = JSON.parse(data).explanation;
+            // console.log("DING DING!", json);
+            resolve(data);
           });
         
         }).on("error", (err) => {
@@ -67,9 +72,9 @@ class HttpChannelClient implements Channel{
       });
     }
     
-    // signature() {
-    //   return this.channelConfig;
-    // }
+    signature() {
+      return this.channelConfig;
+    }
   }
 
 export async function server(actor: Actor, channelConfig: ChannelConfig): Promise<Channel> {

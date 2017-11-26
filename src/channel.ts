@@ -8,6 +8,7 @@ export default interface Channel {
   // create(actorConfig: any);
   // connect(actorName: string);
   // toString();
+  signature();
 }
 
 export interface ChannelConfig {
@@ -17,8 +18,8 @@ export interface ChannelConfig {
 }
 
 export interface ChannelSetup {
-  server(actor: Actor, config: ChannelConfig);
-  client(actor: Actor, config: ChannelConfig);
+  server(actor: Actor, config: ChannelConfig): Promise<Channel>;
+  client(actor: Actor, config: ChannelConfig): Promise<Channel>;
 }
 
 export async function ChannelLoader(type): Promise<ChannelSetup> {

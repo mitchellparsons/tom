@@ -1,11 +1,11 @@
 import * as path from "path";
 import Actor, { ActorFactory, ActorConfig } from "./Actor";
-import Agency from "./agency";
+import Agency, { AgencyConfig, AgencyLoader } from "./Agency";
 import Channel, { ChannelConfig } from "./channel";
 import ChannelLoader from "./channelLoader";
 import { ChannelLoader2 } from "./channelLoader";
-import AgencyLoader from "./agencyLoader";
-import AgencyManager from "./AgencyManager";
+// import AgencyLoader from "./agencyLoader";
+// import AgencyManager from "./AgencyManager";
 
 
 export default class Agent {
@@ -22,19 +22,28 @@ export default class Agent {
     throw new Error("actor does not exist");
   }
 
-  public agency(agencyName: string) {
+  public agency(agencyName: string): Agency {
     return this.agencies.find((agency) => {
       return agency.name === agencyName;
     })
   }
 
-  public async loadAgency(agencyConfig: any) {
-    console.log("AGENT  LOAD AGENCY", agencyConfig)
-    let agency = await AgencyLoader(agencyConfig);
+  public async connectToAgency(agencyConfig: AgencyConfig) {
+    let agencySetup = await AgencyLoader(agencyConfig.type);
+    let agency = await agencySetup.connect(agencyConfig);
     this.agencies.push(agency);
   }
 
+
   public async addActor(actorConfig: ActorConfig) {
+    // if foreign get config
+    if(actorConfig.type === "foreign") {
+      actorConfig.config = await this.agency(actorConfig.config.agency).getActorConfig(actorConfig.name)
+      // console.log("ima here!", actorConfig.config)
+      // do some combination here??
+      // overwrite with default values
+    }
+
     let actor = ActorFactory(actorConfig.name, actorConfig.type, actorConfig.config);
     if(actorConfig.config.channels) {
       await Promise.all(actorConfig.config.channels.map( async (channelConfig: ChannelConfig) => {
@@ -42,28 +51,12 @@ export default class Agent {
       }));
     }
     this.actors.push(actor)
+    // register actor with agency
+    if(actorConfig.config.register) {
+      this.agency(actorConfig.config.register).register(actor);
+    }
   }
-  // public async addActor(actorConfig: any) {
-  //   let actor = new Actor(actorConfig);
-  //   await actor.loadChannels();
-  //   // register actor with agency
-  //   await Promise.all(actorConfig.register.map( async (agency) => {
-  //     await this.agencies.find((a) => a.name === agency).register(actor);
-  //   }));
-  //   this.actors.push(actor);
-  // }
 
-  public async connectToActor(connectionConfig: any) {
-    // console.log("<1", connectionConfig)
-// connect:
-// - name: "test1"
-//   agency: "filesystem"
-    // var agency = this.agency(connectionConfig.agency);
-    // var actorSignature = agency.getActorSignature(connectionConfig.name);
-    // var actor = new Actor(actorSignature);
-    // await actor.connectChannels("http");
-    // this.actors.push(actor);
-  }
 
   constructor() {
     this.agencies = [];
