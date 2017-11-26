@@ -55,20 +55,13 @@ class HttpChannelClient implements Channel{
           resp.on('data', (chunk) => {
             data += chunk;
           });
-          // The whole response has been received. Print out the result.
           resp.on('end', () => {
-            console.log("END!", data)
-            // var json  = JSON.parse(data).explanation;
-            // console.log("DING DING!", json);
             resolve(data);
           });
         
         }).on("error", (err) => {
           console.log("Error: " + err.message);
         });
-
-        console.log("calling call on http", this.name)
-        // return this.actorModule[funcName](...data);
       });
     }
     

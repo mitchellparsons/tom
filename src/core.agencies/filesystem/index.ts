@@ -3,8 +3,6 @@ import Agency, { AgencyConfig } from "../../Agency";
 import * as path from "path";
 import * as fs from "fs";
 
-// const actors = {};
-
 class FileSystemAgency implements Agency {
 
   public name: string;
@@ -57,7 +55,6 @@ class FileSystemAgency implements Agency {
   }
 
   register(actor: Actor) {
-    // console.log("FS Registering ", actor.name, actor.signature());
     var actors = this.actors();
     actors[actor.name] = actor.signature();
     this.setActors(actors);
