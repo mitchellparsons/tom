@@ -1,5 +1,5 @@
 import Actor from "../../Actor";
-import Agent from "../../agent";
+import Agent from "../../Agent";
 import Agency from "../../agency";
 import * as path from "path";
 import * as fs from "fs";
@@ -27,6 +27,7 @@ export default class FileSystemAgency implements Agency{
   }
 
   private actors() {
+    console.log("Agency FS reading actors", this)
     if(fs.existsSync(this.path)) {
       let contents = fs.readFileSync(this.path, "utf8");
       return JSON.parse(contents);
@@ -45,16 +46,22 @@ export default class FileSystemAgency implements Agency{
   }
 
   register(actor: Actor) {
-    console.log("FS Registering ", actor.name);
+    // console.log("FS Registering ", actor.name, actor.signature());
     var actors = this.actors();
-    actors[actor.name] = actor.signature();
+    // actors[actor.name] = actor.signature();
     this.setActors(actors);
   }
 
   getAgent(actorName: string): Agent {
     var actors = this.readFile(this.path);
     console.log("Agent for " + actorName, actors[actorName])
-    return new Agent(actors[actorName]);
+    // return new Agent(actors[actorName]);
+    return null;
+  }
+
+  getActorSignature(actorName: string) {
+    var actors = this.actors();
+    return actors[actorName];
   }
 
   toString() {

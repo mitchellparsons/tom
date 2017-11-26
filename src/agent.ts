@@ -1,36 +1,18 @@
 import * as path from "path";
-import Actor from "./Actor";
+import Actor, { ActorFactory, ActorConfig } from "./Actor";
 import Agency from "./agency";
-import Channel from "./channel";
+import Channel, { ChannelConfig } from "./channel";
 import ChannelLoader from "./channelLoader";
 import { ChannelLoader2 } from "./channelLoader";
 import AgencyLoader from "./agencyLoader";
 import AgencyManager from "./AgencyManager";
 
+
 export default class Agent {
-  
-  public actor: string;
-  public channels: any[];
-  public methods: any[];
-
-  constructor(public agentConfig) {
-    console.log("creating agent", agentConfig);
-    this.actor = agentConfig.actor;
-    this.channels = agentConfig.channels;
-    this.methods = agentConfig.methods;
-  }
-
-  async connect(channelConfig: any) {
-    let channel = await ChannelLoader(channelConfig.type);
-    return channel.connect(this.actor);
-  }
-}
-
-export class Agent2 {
 
   public agencies: Agency[];
   // private channels: Channel[];
-  public actors: Actor[];
+  
 
   public actor(actorName: string) {
     let actor= this.actors.find((actor) => {
@@ -40,39 +22,53 @@ export class Agent2 {
     throw new Error("actor does not exist");
   }
 
+  public agency(agencyName: string) {
+    return this.agencies.find((agency) => {
+      return agency.name === agencyName;
+    })
+  }
+
+  public async loadAgency(agencyConfig: any) {
+    console.log("AGENT  LOAD AGENCY", agencyConfig)
+    let agency = await AgencyLoader(agencyConfig);
+    this.agencies.push(agency);
+  }
+
+  public async addActor(actorConfig: ActorConfig) {
+    let actor = ActorFactory(actorConfig.name, actorConfig.type, actorConfig.config);
+    if(actorConfig.config.channels) {
+      await Promise.all(actorConfig.config.channels.map( async (channelConfig: ChannelConfig) => {
+        await actor.loadChannel(channelConfig);
+      }));
+    }
+    this.actors.push(actor)
+  }
+  // public async addActor(actorConfig: any) {
+  //   let actor = new Actor(actorConfig);
+  //   await actor.loadChannels();
+  //   // register actor with agency
+  //   await Promise.all(actorConfig.register.map( async (agency) => {
+  //     await this.agencies.find((a) => a.name === agency).register(actor);
+  //   }));
+  //   this.actors.push(actor);
+  // }
+
+  public async connectToActor(connectionConfig: any) {
+    // console.log("<1", connectionConfig)
+// connect:
+// - name: "test1"
+//   agency: "filesystem"
+    // var agency = this.agency(connectionConfig.agency);
+    // var actorSignature = agency.getActorSignature(connectionConfig.name);
+    // var actor = new Actor(actorSignature);
+    // await actor.connectChannels("http");
+    // this.actors.push(actor);
+  }
+
   constructor() {
     this.agencies = [];
     this.actors = [];
   }
 
-  public async loadAgency(agencyConfig: any) {
-    console.log("AGENT2  LOAD AGENCY", agencyConfig)
-    let agency = await AgencyLoader(agencyConfig);
-    this.agencies.push(agency);
-  }
-
-  public async addActor(actorConfig: any) {
-    let actor = new Actor(actorConfig);
-    await actor.loadChannels();
-    // register actor with agency
-    await Promise.all(actorConfig.register.map( async (agency) => {
-      await this.agencies.find((a) => a.name === agency).register(actor);
-    }));
-    this.actors.push(actor);
-  }
-
-}
-
-export async function Tom2(actorConfig: any): Promise < Agent2 > {
-
-  let agencies = await Promise.all(actorConfig.agencies.map(async(agencyConfig) => {
-    return await AgencyLoader(agencyConfig)
-  }));
-
-  let channels = await Promise.all(actorConfig.channels.map(async(channelConfig) => {
-    return await ChannelLoader(channelConfig);
-  }));
-
-  return new Agent2();
-
+  private actors: Actor[];
 }

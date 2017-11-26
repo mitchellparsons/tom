@@ -11,3 +11,34 @@ actors:
       - name: "memory"
         type: "memory"
         values: "other things"
+
+# actors:
+#   - name: "test1"
+#     location: "local"
+#     file: "test1"
+#     register: "agency1"
+#     channel: "memory"
+#   - name: "test1"
+#     type: "local"
+#     register: "agency1"
+#     channels:
+#       - type: "memory"
+#       - type: "http"
+#         port: 80
+#         host: "127.0.0.1"
+#   - name: "test2"
+#     type: "foreign"
+#     agency: "agency1"
+#     channels:
+#       - type: "memory"
+#       - type: "http"
+
+# actors:
+#   - name: "actor1"
+#     type: "local"
+#     config:
+#       file: "test1.js"
+#   - name: "actor2"
+#     type: "local"
+#     config:
+#       file: "test2.js"
