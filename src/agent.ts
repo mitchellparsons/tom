@@ -2,17 +2,10 @@ import * as path from "path";
 import Actor, { ActorFactory, ActorConfig } from "./Actor";
 import Agency, { AgencyConfig, AgencyLoader } from "./Agency";
 import Channel, { ChannelConfig } from "./channel";
-import ChannelLoader from "./channelLoader";
-import { ChannelLoader2 } from "./channelLoader";
-// import AgencyLoader from "./agencyLoader";
-// import AgencyManager from "./AgencyManager";
-
 
 export default class Agent {
 
   public agencies: Agency[];
-  // private channels: Channel[];
-  
 
   public actor(actorName: string) {
     let actor= this.actors.find((actor) => {
@@ -39,7 +32,6 @@ export default class Agent {
     // if foreign get config
     if(actorConfig.type === "foreign") {
       actorConfig.config = await this.agency(actorConfig.config.agency).getActorConfig(actorConfig.name)
-      // console.log("ima here!", actorConfig.config)
       // do some combination here??
       // overwrite with default values
     }

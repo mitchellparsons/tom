@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 // require('../dist/wrap.js')
-require('../dist/wrap2.js')
+require('../dist/wrap.js')

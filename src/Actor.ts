@@ -1,6 +1,5 @@
 import * as path from "path";
 import Channel, { ChannelConfig, ChannelLoader } from "./Channel";
-import { ChannelLoader2 } from "./ChannelLoader";
 
 export default interface Actor {
   name: string;
@@ -14,53 +13,6 @@ export interface ActorConfig {
   type: string;
   config: any;
 }
-
-// export class ActorOld {
-  
-//   public name: string;
-//   public channels: Channel[];
-//   public module: any;
-//   public methods: string[];
-  
-//   public signature() {
-//     return {
-//       name: this.name,
-//       methods: this.methods,
-//       channels: this.channels.map((channel) => channel.signature())
-//     }
-//   }
-
-//   public channel(channelName) {
-//     let channel = this.channels.find((channel) => {
-//       return channel.name === channelName
-//     });
-
-//     return channel;
-//   }
-
-//   constructor(private actorConfig: any) {
-//     this.name = actorConfig.name;
-//     if(actorConfig.file) {
-//       this.module = require(path.join(process.cwd(), actorConfig.file));
-//       this.methods = Object.keys(this.module);
-//     }
-//     this.channels = [];
-//   }
-
-//   async loadChannels() {
-//     await Promise.all(this.actorConfig.channels.map( async (channelConfig) =>{
-//       let channel: Channel = await (ChannelLoader2(channelConfig.type)).default(channelConfig, this.module);
-//       this.channels.push(channel);
-//     }));
-//   }
-
-//   async connectChannels(channelName) {
-//     console.log("Connecting channels")
-//     let channelConfig = this.actorConfig[channelName];
-//     let channel = await (ChannelLoader2(channelConfig.type)).connect(channelConfig, this.module);
-//   }
-// }
-
   
 export class ActorLocal implements Actor {
 
@@ -96,13 +48,6 @@ export class ActorLocal implements Actor {
     var channel = await (await ChannelLoader(channelConfig.type)).server(this, channelConfig);
     this.channels.push(channel);
   }
-
-  // async loadChannels() {
-  //   await Promise.all(this.actorConfig.channels.map( async (channelConfig) =>{
-  //     let channel: Channel = await (ChannelLoader2(channelConfig.type)).default(channelConfig, this.module);
-  //     this.channels.push(channel);
-  //   }));
-  // }
 
   async call(methodName: string, ...data): Promise<any> {
     return  await this.module[methodName](...data);
